@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>SwissBorg - Trigger Iterable Email</title>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     body {
       font-family: sans-serif;
@@ -33,28 +34,32 @@
   <h2>Hi CS team! 👋</h2>
   <h3>Trigger Iterable Email</h3>
   <form id="protected-form" method="POST" target="_blank"
-        action="https://links.iterable.com/lists/publicAddSubscriberForm?publicIdString=cf790fff-8855-49a3-89c6-20062f56ab52">
+        action="https://links.iterable.com/lists/publicAddSubscriberForm?publicIdString=cf790fff-8855-49a3-89c6-20062f56ab52"
+        onsubmit="return validateForm();">
 
     <input type="text" name="email" placeholder="Enter email address" required>
     <input type="password" id="secret" placeholder="Access password" required>
+    
+    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div> <!-- Test key -->
+    
     <input type="submit" value="Submit">
 
-    <div class="error" id="error-msg">⚠️ Incorrect password. Please try again.</div>
+    <div class="error" id="error-msg">⚠️ Incorrect password or missing CAPTCHA. Please try again.</div>
   </form>
 
   <script>
-    const form = document.getElementById('protected-form');
-    const passwordField = document.getElementById('secret');
-    const errorMsg = document.getElementById('error-msg');
+    function validateForm() {
+      const password = document.getElementById('secret').value;
+      const captcha = grecaptcha.getResponse();
+      const errorMsg = document.getElementById('error-msg');
 
-    form.addEventListener('submit', function(event) {
-      if (passwordField.value !== 'seriesa') {
-        event.preventDefault();
+      if (password !== 'seriesa' || captcha.length === 0) {
         errorMsg.style.display = 'block';
-      } else {
-        errorMsg.style.display = 'none';
+        return false;
       }
-    });
+      errorMsg.style.display = 'none';
+      return true;
+    }
   </script>
 
 </body>
